@@ -3,11 +3,67 @@
   "trailingSlash": false,
   "headers": [
     {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self'; object-src 'none'; base-uri 'self'"
+        },
+        {
+          "key": "Content-Security-Policy-Report-Only",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"
+        }
+      ]
+    },
+    {
+      "source": "/assets/catalog/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/assets/catalog/manifest.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
       "source": "/assets/library.json",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/assets/vendor/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     },
@@ -24,6 +80,46 @@
   "functions": {
     "api/leads.js": {
       "maxDuration": 30
+    },
+    "api/events.js": {
+      "maxDuration": 30
+    },
+    "api/retry-notifications.js": {
+      "maxDuration": 30
+    },
+    "api/catalog.js": {
+      "includeFiles": "templates/**"
+    },
+    "api/worksheet.js": {
+      "includeFiles": "{assets/content/**,templates/**}"
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/worksheets/grades",
+      "destination": "/api/catalog"
+    },
+    {
+      "source": "/worksheets/grade/:grade/:subject",
+      "destination": "/api/catalog?grade=:grade&subject=:subject"
+    },
+    {
+      "source": "/worksheets/grade/:grade",
+      "destination": "/api/catalog?grade=:grade"
+    },
+    {
+      "source": "/worksheets/unit/:unit",
+      "destination": "/api/catalog?unit=:unit"
+    },
+    {
+      "source": "/worksheet/:id",
+      "destination": "/api/worksheet?id=:id"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/retry-notifications",
+      "schedule": "0 2 * * *"
+    }
+  ]
 }

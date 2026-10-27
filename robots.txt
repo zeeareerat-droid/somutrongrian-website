@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /worksheet-manager
+Disallow: /api/
 
 Sitemap: https://xn--72czq3aheb5c3fza5gva.online/sitemap.xml
