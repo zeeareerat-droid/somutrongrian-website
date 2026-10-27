@@ -116,10 +116,5 @@
       "destination": "/api/worksheet?id=:id"
     }
   ],
-  "crons": [
-    {
-      "path": "/api/retry-notifications",
-      "schedule": "0 2 * * *"
-    }
-  ]
+  "crons": []
 }
